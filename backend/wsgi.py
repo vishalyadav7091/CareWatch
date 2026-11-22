@@ -11,8 +11,8 @@ env_name = os.getenv("FLASK_ENV", "development")
 app = create_app(env_name)
 
 if __name__ == "__main__":
-    host = os.getenv("HOST", "127.0.0.1")
+    host = os.getenv("HOST", "0.0.0.0")
     port = int(os.getenv("PORT", 5000))
-    debug = os.getenv("FLASK_DEBUG", "1") == "1"
+    debug = os.getenv("FLASK_DEBUG", "0") == "1"
     print(f"Starting CareWatch backend with SocketIO on http://{host}:{port}")
     socketio.run(app, host=host, port=port, debug=debug, use_reloader=False, allow_unsafe_werkzeug=True)

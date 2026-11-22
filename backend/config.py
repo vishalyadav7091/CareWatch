@@ -12,11 +12,18 @@ DB_USER = os.getenv("DB_USER", "root")
 DB_PASSWORD = os.getenv("DB_PASSWORD", "")
 DB_NAME = os.getenv("DB_NAME", "carewatch_db")
 
-# Safely encode credentials for MySQL URI
-encoded_password = quote_plus(DB_PASSWORD)
-database_uri = (
-    f"mysql+pymysql://{DB_USER}:{encoded_password}@{DB_HOST}:{DB_PORT}/{DB_NAME}?charset=utf8mb4"
-)
+# If cloud provider provides DATABASE_URL / MYSQL_URL, use it directly
+raw_db_url = os.getenv("DATABASE_URL") or os.getenv("MYSQL_URL")
+if raw_db_url:
+    if raw_db_url.startswith("mysql://"):
+        raw_db_url = raw_db_url.replace("mysql://", "mysql+pymysql://", 1)
+    database_uri = raw_db_url
+else:
+    # Safely encode credentials for MySQL URI
+    encoded_password = quote_plus(DB_PASSWORD)
+    database_uri = (
+        f"mysql+pymysql://{DB_USER}:{encoded_password}@{DB_HOST}:{DB_PORT}/{DB_NAME}?charset=utf8mb4"
+    )
 
 
 # Test database URI: isolates all tests to carewatch_test_db so development DB is NEVER touched
