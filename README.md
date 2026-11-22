@@ -4,6 +4,17 @@
 
 ---
 
+## 🌐 Live Cloud Demo
+
+Experience CareWatch running live on cloud infrastructure:
+
+- 🖥️ **Live Web Application (Vercel):** [https://care-watch-vishalyadav7091s-projects.vercel.app](https://care-watch-vishalyadav7091s-projects.vercel.app)
+- ⚙️ **Live Backend API (Render):** [https://carewatch-backend.onrender.com](https://carewatch-backend.onrender.com)
+- 📊 **Live API Health Check:** [https://carewatch-backend.onrender.com/api/health](https://carewatch-backend.onrender.com/api/health)
+- 🗄️ **Live Database Status:** [https://carewatch-backend.onrender.com/api/health/db](https://carewatch-backend.onrender.com/api/health/db)
+
+---
+
 ## 💡 What is CareWatch?
 
 **CareWatch** is a smart ICU monitoring dashboard. It helps doctors and nurses watch patient vital signs (like heart rate and blood pressure) in real time. It also uses machine learning to highlight when a patient might need extra attention.
@@ -48,15 +59,15 @@ npm run dev
 
 ---
 
-## 🔑 Login Accounts (Ready to Use)
+## 🔑 Login Accounts (1-Click Selector on Login Screen)
 
-You can log in with any of these pre-configured demo accounts:
+You can log in with any of these pre-configured demo accounts (or simply click the **[Doctor]**, **[Nurse]**, or **[Admin]** quick-fill button on the login screen):
 
 | Role | Email | Password | What they can do |
 | :--- | :--- | :--- | :--- |
-| **Doctor** | `doctor.smith@carewatch.local` | `Password#123` | Full access: view patients, AI scores, alerts, audit logs |
-| **Nurse** | `nurse.jack@carewatch.local` | `Password#123` | Clinical access: monitor patients, acknowledge alerts |
-| **Admin** | `admin@carewatch.local` | `Password#123` | System management: audit logs, user management |
+| **Doctor** | `doctor.smith@carewatch.local` | `Password#123` | Clinical access: view patients, AI deterioration scores, alerts, escalations |
+| **Nurse** | `nurse.jack@carewatch.local` | `Password#123` | Bedside access: monitor live vitals, bed management, acknowledge alerts |
+| **Admin** | `admin@carewatch.local` | `Password#123` | Management console: view all Doctors & Nurses records, audit trails |
 
 ---
 
