@@ -12,15 +12,19 @@ DB_USER = os.getenv("DB_USER", "root")
 DB_PASSWORD = os.getenv("DB_PASSWORD", "")
 DB_NAME = os.getenv("DB_NAME", "carewatch_db")
 
+# Safely encode credentials for MySQL URI
+encoded_password = quote_plus(DB_PASSWORD)
+
 # If cloud provider provides DATABASE_URL / MYSQL_URL, use it directly
 raw_db_url = os.getenv("DATABASE_URL") or os.getenv("MYSQL_URL")
 if raw_db_url:
     if raw_db_url.startswith("mysql://"):
         raw_db_url = raw_db_url.replace("mysql://", "mysql+pymysql://", 1)
     database_uri = raw_db_url
+elif os.getenv("RENDER") or (os.getenv("FLASK_ENV") == "production" and DB_HOST in ["127.0.0.1", "localhost"] and not DB_PASSWORD):
+    # Standalone cloud container fallback (SQLite) when external MySQL is not configured
+    database_uri = "sqlite:///carewatch.db"
 else:
-    # Safely encode credentials for MySQL URI
-    encoded_password = quote_plus(DB_PASSWORD)
     database_uri = (
         f"mysql+pymysql://{DB_USER}:{encoded_password}@{DB_HOST}:{DB_PORT}/{DB_NAME}?charset=utf8mb4"
     )
