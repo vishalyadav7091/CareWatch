@@ -18,7 +18,12 @@ encoded_password = quote_plus(DB_PASSWORD)
 # If cloud provider provides DATABASE_URL / MYSQL_URL, use it directly
 raw_db_url = os.getenv("DATABASE_URL") or os.getenv("MYSQL_URL")
 if raw_db_url:
-    if raw_db_url.startswith("mysql://"):
+    # Support Render PostgreSQL (postgres:// or postgresql://) and MySQL
+    if raw_db_url.startswith("postgres://"):
+        raw_db_url = raw_db_url.replace("postgres://", "postgresql+psycopg2://", 1)
+    elif raw_db_url.startswith("postgresql://") and "+psycopg2" not in raw_db_url:
+        raw_db_url = raw_db_url.replace("postgresql://", "postgresql+psycopg2://", 1)
+    elif raw_db_url.startswith("mysql://"):
         raw_db_url = raw_db_url.replace("mysql://", "mysql+pymysql://", 1)
     database_uri = raw_db_url
 elif os.getenv("RENDER") or (os.getenv("FLASK_ENV") == "production" and DB_HOST in ["127.0.0.1", "localhost"] and not DB_PASSWORD):

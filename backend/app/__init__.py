@@ -67,16 +67,14 @@ def create_app(config_name="development"):
     @app.route("/api/health/db", methods=["GET"])
     def db_health_check():
         try:
-            with db.engine.connect() as connection:
-                version_result = connection.execute(text("SELECT VERSION();")).fetchone()
-                db_result = connection.execute(text("SELECT DATABASE();")).fetchone()
-                tables_result = connection.execute(text("SHOW TABLES;")).fetchall()
-                table_names = [row[0] for row in tables_result]
+            from sqlalchemy import inspect
+            inspector = inspect(db.engine)
+            table_names = inspector.get_table_names()
+            db_dialect = db.engine.dialect.name
             return jsonify({
                 "status": "healthy",
                 "database_connection": "connected",
-                "database_name": db_result[0],
-                "database_version": version_result[0],
+                "database_engine": db_dialect,
                 "table_count": len(table_names),
                 "tables": table_names,
                 "timestamp": datetime.now(timezone.utc).isoformat(),
