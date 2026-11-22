@@ -63,5 +63,6 @@ export const clinicalService = {
   getRiskHistory: (patientId) => api.get(`/ml/history/${patientId}`),
   getAuditLogs: (page = 1, perPage = 50) => api.get(`/audit?page=${page}&per_page=${perPage}`),
   getPatientAuditTrail: (patientId) => api.get(`/audit/patient/${patientId}`),
+  getStaffDirectory: () => api.get('/audit/staff'),
 };
 

@@ -9,8 +9,9 @@ import PatientDetail from './PatientDetail';
 import BedManagement from './BedManagement';
 import AlertPanel from './AlertPanel';
 import ConnectionStatus from './ConnectionStatus';
+import StaffManagement from './StaffManagement';
 
-const NAV = [
+const BASE_NAV = [
   { id: 'dashboard', label: 'ICU Dashboard', icon: Activity },
   { id: 'beds', label: 'Bed Management', icon: BedDouble },
   { id: 'alerts', label: 'Alerts', icon: Bell },
@@ -173,6 +174,13 @@ export default function Dashboard({ user, onLogout }) {
 
   const activeAlertCount = alerts.filter(a => a.status === 'active').length;
 
+  const navItems = [
+    ...BASE_NAV,
+    ...(user?.role === 'admin'
+      ? [{ id: 'staff', label: 'Staff Roster', icon: Users }]
+      : []),
+  ];
+
   return (
     <div className="min-h-screen flex bg-slate-950 text-slate-100">
       {/* Sidebar */}
@@ -188,7 +196,7 @@ export default function Dashboard({ user, onLogout }) {
         </div>
 
         <nav className="flex-1 p-4 space-y-1">
-          {NAV.map(({ id, label, icon: Icon }) => (
+          {navItems.map(({ id, label, icon: Icon }) => (
             <button
               key={id}
               onClick={() => { setActiveTab(id); if (id !== 'dashboard') { setSelectedPatientId(null); setSelectedPatient(null); } }}
@@ -216,12 +224,20 @@ export default function Dashboard({ user, onLogout }) {
             livePatients={streamingPatients.size}
           />
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-sky-500/20 flex items-center justify-center text-sky-400 font-bold text-sm">
+            <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${
+              user?.role === 'admin'
+                ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30'
+                : user?.role === 'nurse'
+                ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                : 'bg-sky-500/20 text-sky-400 border border-sky-500/30'
+            }`}>
               {user?.full_name?.[0] || 'U'}
             </div>
             <div className="text-sm">
               <p className="text-white font-medium leading-tight truncate max-w-[120px]">{user?.full_name || 'Staff'}</p>
-              <p className="text-slate-500 text-xs capitalize">{user?.role}</p>
+              <p className="text-slate-500 text-xs capitalize">
+                {user?.role === 'admin' ? 'Hospital Admin' : user?.role === 'doctor' ? 'ICU Doctor' : 'Staff Nurse'}
+              </p>
             </div>
           </div>
           <button
@@ -241,7 +257,9 @@ export default function Dashboard({ user, onLogout }) {
             <h2 className="text-base font-semibold text-white">
               {activeTab === 'dashboard' && selectedPatientId ? 'Patient Details' :
                activeTab === 'dashboard' ? 'ICU Dashboard' :
-               activeTab === 'beds' ? 'Bed Management' : 'Clinical Alerts'}
+               activeTab === 'beds' ? 'Bed Management' :
+               activeTab === 'alerts' ? 'Clinical Alerts' :
+               activeTab === 'staff' ? 'Medical Staff Roster' : ''}
             </h2>
             <p className="text-xs text-slate-400">City General Hospital · Main ICU – Ward A</p>
           </div>
@@ -339,6 +357,10 @@ export default function Dashboard({ user, onLogout }) {
               onSnooze={handleSnoozeAlert}
               onEscalate={handleEscalateAlert}
             />
+          )}
+
+          {!loading && activeTab === 'staff' && (
+            <StaffManagement />
           )}
         </div>
       </main>
